@@ -2,33 +2,66 @@ package application;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Scanner;
 
-import entities.Comment;
-import entities.Post;
+import entities.Client;
+import entities.Order;
+import entities.OrderItem;
+import entities.Product;
+import entitiesEnum.OrderStatus;
 
 public class Program {
 
 	public static void main(String[] args) throws ParseException {
 
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+		Locale.setDefault(Locale.US);
+		Scanner sc = new Scanner(System.in);
 
-		Comment c1 = new Comment("Have a Nice Trip!");
-		Comment c2 = new Comment("Wow That's Awesome!");
-		Post p1 = new Post(sdf.parse("21/06/2018 13:05:44"), "Traveling to new Zealand",
-				"I'm going to visit this wonderful country!", 12, null);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-		p1.addComment(c1);
-		p1.addComment(c2);
+		System.out.println("Enter client data:");
+		System.out.print("Name: ");
+		String name = sc.nextLine();
+		System.out.print("Email: ");
+		String email = sc.nextLine();
+		System.out.print("Birth date (DD//MM//YYYY): ");
+		Date birthDate = sdf.parse(sc.next());
 
-		Comment c3 = new Comment("Good Night");
-		Comment c4 = new Comment("May the force be with you");
-		Post p2 = new Post(sdf.parse("28/07/2018 23:14:19"), "Good Night guy", "See you tomorrow!", 12, null);
+		Client client = new Client(name, email, birthDate);
 
-		p2.addComment(c3);
-		p2.addComment(c4);
+		System.out.println("Enter order data:");
+		System.out.print("Status: ");
+		OrderStatus status = OrderStatus.valueOf(sc.next());
 
-		System.out.println(p1);
-		System.out.println(p2);
+		Order order = new Order(new Date(), status, client);
+
+		System.out.print("How many items to this order ? ");
+		int n = sc.nextInt();
+		for (int i = 1; i <= n; i++) {
+			System.out.println("Enter #" + i + " item data:");
+			System.out.print("Product Name: ");
+			sc.nextLine();
+			String productName = sc.nextLine();
+			System.out.print("Product Price: ");
+			double productPrice = sc.nextDouble();
+
+			Product product = new Product(productName, productPrice);
+
+			System.out.print("Quantity: ");
+			int quantity = sc.nextInt();
+
+			OrderItem orderItem = new OrderItem(quantity, productPrice, product);
+
+			order.addItem(orderItem);
+
+		}
+
+		System.out.println();
+		System.out.println("ORDER SUMMARY");
+		System.out.println(order);
 
 	}
+
 }
